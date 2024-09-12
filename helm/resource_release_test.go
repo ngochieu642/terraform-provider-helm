@@ -1180,7 +1180,7 @@ func TestGetValues(t *testing.T) {
 		t.Fatalf("error setting values: %v", err)
 	}
 
-	values, err := getValues(d)
+	values, err := GetValues(d)
 	if err != nil {
 		t.Fatalf("error getValues: %s", err)
 		return
@@ -1213,7 +1213,7 @@ func TestGetValuesString(t *testing.T) {
 		return
 	}
 
-	values, err := getValues(d)
+	values, err := GetValues(d)
 	if err != nil {
 		t.Fatalf("error getValues: %s", err)
 		return
@@ -1267,7 +1267,7 @@ func TestGetListValues(t *testing.T) {
 		return
 	}
 
-	values, err := getValues(d)
+	values, err := GetValues(d)
 	if err != nil {
 		t.Fatalf("error getValues: %s", err)
 		return

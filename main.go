@@ -4,32 +4,106 @@
 package main
 
 import (
-	"context"
-	"flag"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/hashicorp/terraform-provider-helm/helm"
-	"k8s.io/klog"
+	"log"
+	"testing"
 )
 
 // Generate docs for website
 //go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 
-func main() {
-	debugFlag := flag.Bool("debug", false, "Start provider in stand-alone debug mode.")
-	flag.Parse()
-	klogFlags := flag.NewFlagSet("klog", flag.ExitOnError)
-	klog.InitFlags(klogFlags)
-	err := klogFlags.Set("logtostderr", "false")
+func TestMain(t *testing.T) {
+	fmt.Println("Hello, World!")
+	// Mock schema.ResourceData
+	d := schema.TestResourceDataRaw(t, map[string]*schema.Schema{
+		"values": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem:     &schema.Schema{Type: schema.TypeString},
+		},
+		"set": {
+			Type:     schema.TypeSet,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+					"value": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+					"type": {
+						Type:     schema.TypeString,
+						Optional: true,
+						ValidateFunc: validation.StringInSlice([]string{
+							"auto", "string",
+						}, false),
+					},
+				},
+			},
+		},
+		"set_list": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+					"value": {
+						Type:     schema.TypeList,
+						Required: true,
+						Elem:     &schema.Schema{Type: schema.TypeString},
+					},
+				},
+			},
+		},
+		"set_sensitive": {
+			Type:     schema.TypeSet,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+					"value": {
+						Type:     schema.TypeString,
+						Required: true,
+					},
+				},
+			},
+		},
+	}, map[string]interface{}{
+		"set": []interface{}{
+			map[string]interface{}{
+				"name":  "extraArgs.scale-down-unneeded-time",
+				"value": "2m",
+			},
+			map[string]interface{}{
+				"name":  "extraArgs.scale-down-unneeded-time",
+				"value": "100m",
+			},
+		},
+	})
+
+	// Call getValues
+	values, err := helm.GetValues(d)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error getting values: %v", err)
 	}
-	serveOpts := &plugin.ServeOpts{
-		ProviderFunc: helm.Provider,
-	}
-	if debugFlag != nil && *debugFlag {
-		plugin.Debug(context.Background(), "registry.terraform.io/hashicorp/helm", serveOpts)
-	} else {
-		plugin.Serve(serveOpts)
-	}
+
+	// Inspect the output
+	fmt.Printf("Values: %v\n", values)
+}
+
+func main() {
+	// Run the test
+	TestMain(&testing.T{})
 }

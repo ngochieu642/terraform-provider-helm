@@ -466,7 +466,7 @@ func dataTemplateRead(ctx context.Context, d *schema.ResourceData, meta interfac
 
 	debug("%s Preparing for installation", logID)
 
-	values, err := getValues(d)
+	values, err := GetValues(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}

@@ -617,7 +617,7 @@ func resourceReleaseCreate(ctx context.Context, d *schema.ResourceData, meta int
 	}
 
 	debug("%s Preparing for installation", logID)
-	values, err := getValues(d)
+	values, err := GetValues(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -829,7 +829,7 @@ func resourceReleaseUpdate(ctx context.Context, d *schema.ResourceData, meta int
 		client.PostRenderer = pr
 	}
 
-	values, err := getValues(d)
+	values, err := GetValues(d)
 	if err != nil {
 		d.Partial(true)
 		return diag.FromErr(err)
@@ -1037,7 +1037,7 @@ func resourceDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{})
 			install.CreateNamespace = d.Get("create_namespace").(bool)
 			install.PostRenderer = postRenderer
 
-			values, err := getValues(d)
+			values, err := GetValues(d)
 			if err != nil {
 				return fmt.Errorf("error getting values: %v", err)
 			}
@@ -1099,7 +1099,7 @@ func resourceDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{})
 		upgrade.Description = d.Get("description").(string)
 		upgrade.PostRenderer = postRenderer
 
-		values, err := getValues(d)
+		values, err := GetValues(d)
 		if err != nil {
 			return fmt.Errorf("error getting values for a diff: %v", err)
 		}
@@ -1319,7 +1319,7 @@ func mergeMaps(a, b map[string]interface{}) map[string]interface{} {
 	return out
 }
 
-func getValues(d resourceGetter) (map[string]interface{}, error) {
+func GetValues(d resourceGetter) (map[string]interface{}, error) {
 	base := map[string]interface{}{}
 
 	for _, raw := range d.Get("values").([]interface{}) {
@@ -1579,7 +1579,7 @@ func resourceReleaseValidate(d resourceGetter, meta interface{}, cpo *action.Cha
 		return fmt.Errorf("malformed values: \n\t%s", err)
 	}
 
-	values, err := getValues(d)
+	values, err := GetValues(d)
 	if err != nil {
 		return err
 	}
