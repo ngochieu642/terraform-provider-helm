@@ -88,7 +88,7 @@ func TestMain(t *testing.T) {
 			},
 			map[string]interface{}{
 				"name":  "extraArgs.scale-down-unneeded-time",
-				"value": "100m",
+				"value": "110m",
 			},
 		},
 	})

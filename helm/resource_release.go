@@ -1340,7 +1340,7 @@ func GetValues(d resourceGetter) (map[string]interface{}, error) {
 		base = mergeMaps(base, currentMap)
 	}
 
-	for _, raw := range d.Get("set").(*schema.Set).List() {
+	for _, raw := range d.Get("set").([]interface{}) {
 		set := raw.(map[string]interface{})
 		if err := getValue(base, set); err != nil {
 			return nil, err

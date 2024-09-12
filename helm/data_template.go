@@ -105,7 +105,7 @@ func dataTemplate() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"set": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "Custom values to be merged with the values.",
 				Elem: &schema.Resource{
