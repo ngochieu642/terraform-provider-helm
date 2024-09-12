@@ -385,7 +385,20 @@ func dataTemplate() *schema.Resource {
 	}
 }
 
+func readSetAttribute(d *schema.ResourceData) []map[string]interface{} {
+	setList := d.Get("set").(*schema.Set).List()
+	sets := make([]map[string]interface{}, len(setList))
+
+	for i, set := range setList {
+		sets[i] = set.(map[string]interface{})
+	}
+
+	return sets
+}
+
 func dataTemplateRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	sets := readSetAttribute(d)
+	fmt.Printf("Set attribute: %v\n", sets)
 	logID := fmt.Sprintf("[dataTemplateRead: %s]", d.Get("name").(string))
 	debug("%s Started", logID)
 
