@@ -397,9 +397,9 @@ func readSetAttribute(d *schema.ResourceData) []map[string]interface{} {
 }
 
 func dataTemplateRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	logID := fmt.Sprintf("[dataTemplateRead: %s]", d.Get("name").(string))
 	sets := readSetAttribute(d)
 	fmt.Printf("Set attribute: %v\n", sets)
-	logID := fmt.Sprintf("[dataTemplateRead: %s]", d.Get("name").(string))
 	debug("%s Started", logID)
 
 	m := meta.(*Meta)
